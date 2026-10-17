@@ -1,0 +1,21 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import PostGrid from '../../components/PostGrid.astro';
+import { getAllPosts } from '../../utils/posts';
+
+const posts = await getAllPosts();
+---
+
+<Layout title="Journal" description="Thoughts and reflections on frontend development, design, motion, and accessibility.">
+  <section class="section section-muted" aria-labelledby="blog-heading">
+    <div class="container">
+      <div class="section-intro">
+        <p class="eyebrow">Journal</p>
+        <h1 id="blog-heading">Thoughts & reflections</h1>
+        <p>Random thoughts, honest opinions, useful lessons, and creative ideas from my side</p>
+      </div>
+      <PostGrid posts={posts} carousel={false} />
+      <p><a class="blog-back-link" href="/#posts">Back to the homepage</a></p>
+    </div>
+  </section>
+</Layout>

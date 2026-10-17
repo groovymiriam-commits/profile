@@ -1,0 +1,11 @@
+@use 'sass:color';
+
+@mixin paper-texture($surface) {
+  background-color: $surface;
+  background-image:
+    linear-gradient(color.change($surface, $alpha: 0.78), color.change($surface, $alpha: 0.78)),
+    url('/images/Texturelabs_Paper_143M.jpg');
+  background-blend-mode: normal, multiply;
+  background-position: center;
+  background-size: cover;
+}

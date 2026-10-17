@@ -1,0 +1,43 @@
+---
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import CookieConsent from '../components/CookieConsent.astro';
+import { siteConfig } from '../config/site';
+import '../styles/main.scss';
+
+interface Props {
+  title?: string;
+  description?: string;
+  noindex?: boolean;
+}
+
+const {
+  title = siteConfig.name,
+  description = 'Frontend development, websites, and video editing.',
+  noindex = false,
+} = Astro.props;
+const pageTitle = title === siteConfig.name ? title : `${title} — ${siteConfig.name}`;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={description} />
+    {noindex && <meta name="robots" content="noindex, follow" />}
+    <meta name="theme-color" content="#f7f6f1" />
+    <meta name="google-site-verification" content="TRvMlaDx2EOU0z25JKEoSJ7YKfUP9C08SFHbIfsi4t4" />
+    <link rel="icon" type="image/svg+xml" href="/images/favicon.svg" />
+    <title>{pageTitle}</title>
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <Header />
+    <main id="main-content">
+      <slot />
+    </main>
+    <Footer />
+    <CookieConsent />
+  </body>
+</html>

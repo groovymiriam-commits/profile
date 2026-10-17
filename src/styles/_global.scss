@@ -1,0 +1,153 @@
+@use './variables' as *;
+@use './texture' as *;
+
+:root {
+  color-scheme: light;
+  --primary: #{$primary};
+  --secondary: #{$secondary};
+  --accent: #{$accent};
+  --background: #{$background};
+  --text: #{$text};
+  --light: #{$light};
+  --border: #{$border};
+  --font-title: #{$font-title};
+  --font-body: #{$font-body};
+  --font-display: #{$font-display};
+  --font-hero: #{$font-hero};
+  --container: #{$container};
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 6rem;
+}
+
+body {
+  min-width: 320px;
+  margin: 0;
+  @include paper-texture($background);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 1rem;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+}
+
+a {
+  color: inherit;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+button,
+.button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+
+  padding: 0.8rem 1.4rem;
+
+  background: $secondary;
+  color: $primary;
+
+  border: 3px solid $primary;
+  border-radius: 0.75rem;
+
+  font-family: var(--font-body);
+  font-weight: 700;
+
+  box-shadow: 4px 4px 0 $primary;
+  text-decoration: none;
+
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.button:hover {
+    transform: translate(2px, 2px);
+     background: $button-hover;
+    box-shadow: 2px 2px 0 $primary;
+}
+
+button {
+  color: inherit;
+  
+}
+
+:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 4px;
+}
+
+::selection {
+  background: var(--border);
+  color: var(--primary);
+}
+
+h1,
+h2,
+h3,
+h4 {
+  margin: 0;
+  color: var(--primary);
+  font-family: var(--font-title);
+  font-weight: 500;
+  line-height: 1.12;
+}
+
+p {
+  margin: 1.25em 0;
+}
+
+.container {
+  width: min(calc(100% - 3rem), var(--container));
+  margin-inline: auto;
+}
+
+
+.skip-link {
+  position: absolute;
+  z-index: 10;
+  top: 0.75rem;
+  left: 0.75rem;
+  padding: 0.6rem 0.9rem;
+  transform: translateY(-160%);
+  background: var(--light);
+  color: var(--text);
+}
+
+.skip-link:focus {
+  transform: translateY(0);
+}
+
+@media (max-width: 40rem) {
+  .container {
+    width: min(calc(100% - 2rem), var(--container));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
+}

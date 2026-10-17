@@ -1,0 +1,139 @@
+@use './variables' as *;
+
+.hero {
+  display: grid;
+  min-height: clamp(23rem, 48vw, 39rem);
+  align-items: center;
+  background: #D9B8C3;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero:before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background: url("/images/Texturelabs_Paper_170M.jpg") center / cover;
+  opacity: 0.25;
+  mix-blend-mode: multiply;
+  pointer-events: none;
+}
+
+.hero-inner {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(15rem, 0.8fr);
+  align-items: center;
+  gap: clamp(2rem, 6vw, 5rem);
+  padding-block: 5rem;
+}
+
+.hero-copy {
+  position: relative;
+  z-index: 2;
+}
+
+.hero-portrait {
+  position: absolute;
+  z-index: 1;
+  right: clamp(1rem, 5vw, 5rem);
+  bottom: 0;
+  width: min(36vw, 26rem);
+  height: clamp(22rem, 42vw, 33rem);
+}
+
+.hero-copy {
+  max-width: 50rem;
+}
+
+.hero-image {
+  position: relative;
+  z-index: 2;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center bottom;
+}
+
+.hero-blink {
+  position: absolute;
+  z-index: 3;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center bottom;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.hero-icon {
+  position: absolute;
+  z-index: 1;
+  top: 22%;
+  left: 50%;
+  width: clamp(2.5rem, 5vw, 4.25rem);
+  height: auto;
+  margin-left: calc(clamp(2.5rem, 5vw, 4.25rem) / -2);
+  pointer-events: none;
+  will-change: transform, opacity;
+}
+
+.hero h1 {
+  max-width: 17ch;
+  margin-bottom: 1.25rem;
+  color: var(--primary);
+  font-family: var(--font-hero);
+  font-size: clamp(3.4rem, 5vw, 6.6rem);
+  font-weight: 700;
+  .highlight {
+    padding-inline: 4px;
+    color: $secondary;
+    -webkit-text-stroke: 1px $primary;
+
+
+  }
+}
+.hero p {
+  max-width: 32rem;
+  margin: 0;
+  color: var(--primary);
+  font-size: clamp(1rem, 1.2vw, 1.2rem);
+}
+
+@media (max-width: 40rem) {
+  .hero {
+    min-height: 45rem;
+  }
+
+  .hero-inner {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1rem;
+    padding-block: 4rem;
+  }
+
+  .hero-portrait {
+    position: relative;
+    right: auto;
+    bottom: auto;
+    width: min(82vw, 24rem);
+    height: min(70vw, 21rem);
+    justify-self: center;
+    order: -1;
+  }
+
+  .hero-copy {
+    min-width: 0;
+  }
+
+  .hero-image {
+    width: 100%;
+    height: 100%;
+  }
+
+  .hero h1 {
+    font-size: clamp(2.6rem, 13vw, 3.4rem);
+  }
+}

@@ -1,0 +1,177 @@
+---
+import Hero from '../components/Hero.astro';
+import Layout from '../layouts/Layout.astro';
+import PostGrid from '../components/PostGrid.astro';
+import { siteConfig } from '../config/site';
+import { homePage } from '../config/home';
+import { getAllPosts } from '../utils/posts';
+
+const posts = await getAllPosts();
+---
+
+<Layout title={siteConfig.name} description={homePage.description}>
+  
+  <Hero />
+
+  {homePage.sections.map((section) => (
+    <>
+      {section.type === 'services' && (
+        <section class="section container" id={section.id} aria-labelledby={`${section.id}-heading`}>
+          <div class="section-intro">
+            <p class="eyebrow">{section.eyebrow}</p>
+            <h2 id={`${section.id}-heading`}>{section.title}</h2>
+          </div>
+          <div class="service-grid">
+            {section.items.map((item, index) => (
+              <article class={`service-card service-card--${index + 1}`} role="button" tabindex="0" aria-pressed="false" aria-label={`${item.tag}: show details`}>
+                <div class="service-card-inner">
+                  <div class="service-card-face service-card-front">
+                     <img class="service-icon" src={item.icon} alt="" aria-hidden="true" />
+                    <span class="service-tag">{item.tag}</span>
+                   
+                  </div>
+                  <div class="service-card-face service-card-back">
+                    <h3>{item.title}</h3>
+                    <p>{item.description}</p>
+                    <p class="service-detail">{item.details}</p>
+                  </div>
+                </div>
+              </article>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {section.type === 'about' && (
+        <>
+          {posts.length > 0 && (
+            <section class="section section-muted" id="posts" aria-labelledby="posts-heading">
+              <div class="container">
+                <div class="section-intro">
+                  <p class="eyebrow">Journal</p>
+                  <h2 id="posts-heading">Thoughts & reflections</h2>
+                </div>
+                <PostGrid posts={posts} />
+                <div class="journal-actions">
+                  <a  href="/blog/">View all posts</a>
+                </div>
+              </div>
+            </section>
+          )}
+        <section class="section container two-column" id={section.id} aria-labelledby={`${section.id}-heading`}>
+          <div>
+            <p class="eyebrow">{section.eyebrow}</p>
+            <h2 id={`${section.id}-heading`}>{section.title}</h2>
+            {section.image && (
+              <img 
+                src={section.image} 
+                alt="Profile" 
+                class="about-image"
+                width="400"
+                height="400"
+              />
+            )}
+          </div>
+          <div> {section.paragraphs.map((paragraph) => <p>{paragraph}</p>)}</div>
+          
+        </section>
+        </>
+      )}
+
+      {section.type === 'contact' && (
+        <section class="contact-section" id={section.id} aria-labelledby={`${section.id}-heading`}>
+          <div class="container contact-inner">
+            <div>
+              <p class="eyebrow">{section.eyebrow}</p>
+              <h2 id={`${section.id}-heading`}>{section.title}</h2>
+              <p>{section.description}</p>
+            </div>
+            <a
+              class="button button-light"
+              href={`mailto:${siteConfig.email}`}
+              data-cal-namespace="15min"
+              data-cal-link="sharonab/15min"
+              data-cal-config='{"layout":"month_view","useSlotsViewOnSmallScreen":"true","theme":"light"}'
+            >Tell me about it</a>
+          </div>
+        </section>
+      )}
+    </>
+  ))}
+
+</Layout>
+
+<script>
+  import { getConsent, openConsentBanner } from '../scripts/consent';
+
+  let calLoaded = false;
+
+  async function loadCal() {
+    if (calLoaded) return;
+    calLoaded = true;
+    const { default: EmbedSnippet } = await import('@calcom/embed-snippet');
+    const Cal = EmbedSnippet();
+    Cal('init', '15min', { origin: 'https://app.cal.com' });
+    Cal.ns['15min']('ui', {
+      theme: 'light',
+      hideEventTypeDetails: false,
+      layout: 'month_view',
+      cssVarsPerTheme: {
+        light: {
+          'cal-brand': '#70323E',
+          'cal-brand-emphasis': '#5A2832',
+          'cal-brand-text': '#FFF8EA',
+          'cal-text': '#30211D',
+          'cal-text-emphasis': '#30211D',
+          'cal-text-subtle': '#6B5A52',
+          'cal-text-muted': '#8A7A70',
+          'cal-border': '#D2BFA2',
+          'cal-border-subtle': '#E6D9C2',
+          'cal-border-emphasis': '#70323E',
+          'cal-bg': '#FFF8EA',
+          'cal-bg-subtle': '#F4E8D0',
+          'cal-bg-muted': '#F4E8D0',
+          'cal-bg-emphasis': '#E6D9C2',
+        },
+      },
+    });
+    const modalCss = `
+      .modal-box { border: 2px solid #70323E; border-radius: 22px; background: #FFF8EA; box-shadow: 8px 10px 0 #70323E; overflow: hidden; }
+      .backdrop { background: rgba(48, 33, 29, 0.55); backdrop-filter: blur(3px); }
+      .close { color: #70323E; }
+    `;
+    new MutationObserver(() => {
+      const root = document.querySelector('cal-modal-box')?.shadowRoot;
+      if (root && !root.querySelector('style[data-site]')) {
+        const style = document.createElement('style');
+        style.dataset.site = '';
+        style.textContent = modalCss;
+        root.appendChild(style);
+      }
+    }).observe(document.body, { childList: true, subtree: true });
+  }
+
+  if (getConsent()?.booking) loadCal();
+  window.addEventListener('consent-change', (e) => {
+    if ((e as CustomEvent).detail?.booking) loadCal();
+  });
+
+  document.querySelector('[data-cal-link]')?.addEventListener('click', (e) => {
+    e.preventDefault();
+    if (!getConsent()?.booking) openConsentBanner();
+  });
+
+  document.querySelectorAll<HTMLElement>('.service-card').forEach((card) => {
+    const toggle = () => {
+      const flipped = card.classList.toggle('is-flipped');
+      card.setAttribute('aria-pressed', String(flipped));
+    };
+    card.addEventListener('click', toggle);
+    card.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        toggle();
+      }
+    });
+  });
+</script>

@@ -1,0 +1,54 @@
+---
+import logo from '../assets/logo.svg?raw';
+import { siteConfig } from '../config/site';
+---
+
+<header class="site-header" data-menu-open="false">
+  <div class="container header-inner">
+    <a class="brand" href="/" aria-label={`${siteConfig.name} home`}>
+      <span class="brand-logo" aria-hidden="true" set:html={logo}></span>
+    </a>
+
+    <button
+      class="menu-toggle"
+      type="button"
+      aria-label="Open navigation menu"
+      aria-controls="primary-navigation"
+      aria-expanded="false"
+    >
+      <span class="menu-icon" aria-hidden="true"></span>
+    </button>
+
+    <nav id="primary-navigation" class="site-nav" aria-label="Main navigation">
+      {siteConfig.navigation.map((item) => <a href={item.href}>{item.label}</a>)}
+      <a class="button" href={siteConfig.cta.href}>{siteConfig.cta.label}</a>
+    </nav>
+  </div>
+</header>
+
+<script>
+  const header = document.querySelector<HTMLElement>('.site-header');
+  const menuToggle = header?.querySelector<HTMLButtonElement>('.menu-toggle');
+  const navigation = header?.querySelector<HTMLElement>('#primary-navigation');
+
+  function setMenuOpen(open: boolean) {
+    header?.setAttribute('data-menu-open', String(open));
+    menuToggle?.setAttribute('aria-expanded', String(open));
+    menuToggle?.setAttribute('aria-label', open ? 'Close navigation menu' : 'Open navigation menu');
+  }
+
+  menuToggle?.addEventListener('click', () => {
+    setMenuOpen(header?.getAttribute('data-menu-open') !== 'true');
+  });
+
+  navigation?.addEventListener('click', (event) => {
+    if (event.target instanceof Element && event.target.closest('a')) setMenuOpen(false);
+  });
+
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && header?.getAttribute('data-menu-open') === 'true') {
+      setMenuOpen(false);
+      menuToggle?.focus();
+    }
+  });
+</script>

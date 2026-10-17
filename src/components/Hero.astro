@@ -1,0 +1,131 @@
+---
+
+const { title, subtitle } = Astro.props;
+---
+
+<section class="hero" aria-labelledby="hero-title">
+  <div class="container hero-inner">
+    <div class="hero-copy">
+      <h1 id="hero-title">Code, motion, and<br />making things a<br />
+          little <span class="highlight">less boring.</span>
+      </h1>
+      <p>From writing code to editing video, I turn creative ideas into digital experiences worth exploring.</p>
+    </div>
+    <div class="hero-portrait">
+      <img class="hero-icon hero-icon--1" src="/images/hero/icon1.png" alt="" aria-hidden="true" />
+      <img class="hero-icon hero-icon--2" src="/images/hero/icon2.png" alt="" aria-hidden="true" />
+      <img class="hero-icon hero-icon--3" src="/images/hero/icon3.png" alt="" aria-hidden="true" />
+      <img class="hero-icon hero-icon--4" src="/images/hero/icon4.png" alt="" aria-hidden="true" />
+      <img class="hero-blink" src="/images/hero/blink.png" alt="" aria-hidden="true" />
+      <img
+        class="hero-image"
+        src="/images/hero/hero.png"
+        alt="Illustrated portrait of a person wearing glasses and a burgundy jacket."
+        width="694"
+        height="864"
+      />
+    </div>
+  </div>
+</section>
+
+<script>
+  import { gsap } from 'gsap';
+
+  const icons = gsap.utils.toArray<HTMLElement>('.hero-icon');
+  const blink = document.querySelector<HTMLElement>('.hero-blink');
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  const title = document.querySelector<HTMLElement>('#hero-title');
+
+  if (title && !reduceMotion) {
+    title.setAttribute('aria-label', title.innerHTML.replace(/<br\s*\/?>/g, ' ').replace(/<[^>]+>/g, '').replace(/\s+/g, ' ').trim());
+    const words: HTMLElement[] = [];
+
+    const wrap = (node: Node) => {
+      if (node.nodeType === Node.TEXT_NODE) {
+        const frag = document.createDocumentFragment();
+        (node.textContent ?? '').split(/(\s+)/).forEach((part) => {
+          if (!part) return;
+          if (/^\s+$/.test(part)) {
+            frag.appendChild(document.createTextNode(' '));
+            return;
+          }
+          const span = document.createElement('span');
+          span.textContent = part;
+          span.setAttribute('aria-hidden', 'true');
+          span.style.display = 'inline-block';
+          frag.appendChild(span);
+          words.push(span);
+        });
+        node.parentNode?.replaceChild(frag, node);
+      } else if (node.nodeType === Node.ELEMENT_NODE && node.nodeName !== 'BR') {
+        Array.from(node.childNodes).forEach(wrap);
+      }
+    };
+
+    Array.from(title.childNodes).forEach(wrap);
+
+    gsap.from(words, {
+      scale: 0.8,
+      y: 20,
+      opacity: 0,
+      rotation: (i: number) => (i % 2 === 0 ? -2 : 2),
+      duration: 0.5,
+      stagger: 0.08,
+      delay: 0.2,
+      ease: 'back.out(1.7)',
+      clearProps: 'transform,opacity',
+    });
+  }
+
+  if (blink && !reduceMotion) {
+    gsap.set(blink, { autoAlpha: 0 });
+    gsap
+      .timeline({ delay: 5, repeat: -1, repeatDelay: 4.8 })
+      .to(blink, { autoAlpha: 1, duration: 0.1, ease: 'none' })
+      .to(blink, { autoAlpha: 0, duration: 0.1, ease: 'none' });
+  }
+
+  // Target offsets (x4 px) around the top of the portrait
+  const targets = [
+    { x: -45, y: -22 },
+    { x: -15, y: -42 },
+    { x: 18, y: -38 },
+    { x: 48, y: -18 },
+  ];
+
+  gsap.utils.shuffle(targets);
+
+  icons.forEach((icon, i) => {
+    const { x, y } = targets[i % targets.length];
+
+    if (reduceMotion) {
+      gsap.set(icon, { x: x * 4, y: y * 4, autoAlpha: 1, scale: 1 });
+      return;
+    }
+
+    gsap.set(icon, { x: 0, y: 0, autoAlpha: 0, scale: 0.3 });
+    gsap
+      .timeline({ delay: 0.3 + Math.random() * 1.2 })
+      .to(icon, {
+        xPercent: x * -5,
+        yPercent: y * 6,
+        autoAlpha: 1,
+        scale: 1,
+        rotation: gsap.utils.random(-12, 12),
+        duration: gsap.utils.random(0.9, 1.4),
+        ease: 'back.out(1.6)',
+      })
+      .add(() => {
+        gsap.to(icon, {
+          y: `+=${gsap.utils.random(-12, 12)}`,
+          x: `+=${gsap.utils.random(-8, 8)}`,
+          rotation: `+=${gsap.utils.random(-4, 4)}`,
+          duration: gsap.utils.random(2.2, 3.4),
+          ease: 'sine.inOut',
+          repeat: -1,
+          yoyo: true,
+        });
+      });
+  });
+</script>

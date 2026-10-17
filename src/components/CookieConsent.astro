@@ -1,0 +1,77 @@
+<div class="consent" id="consent" role="dialog" aria-labelledby="consent-title" aria-modal="false" hidden>
+  <h2 id="consent-title">Your privacy choices</h2>
+  <p>
+    This site doesn't use analytics or advertising cookies. A few features load content from
+    third parties, which sends them your IP address, so I ask first. Details in the
+    <a href="/privacy-policy">Privacy Policy</a>.
+  </p>
+
+  <div class="consent-options">
+    <label class="consent-option consent-option-locked">
+      <input type="checkbox" checked disabled />
+      <span>
+        <strong>Essential</strong>
+        Needed to run the site and remember this choice (stored in your browser). Hosting server logs
+        and the Google Search Console ownership tag don't collect visitor data.
+      </span>
+    </label>
+    <label class="consent-option">
+      <input type="checkbox" name="fonts" />
+      <span>
+        <strong>Google Fonts</strong>
+        Loads the site's fonts from Google servers (Google LLC). Without it, standard system fonts are used.
+      </span>
+    </label>
+    <label class="consent-option">
+      <input type="checkbox" name="booking" />
+      <span>
+        <strong>Cal.com booking</strong>
+        Loads the booking calendar from Cal.com when you choose to book a call.
+      </span>
+    </label>
+  </div>
+
+  <div class="consent-actions">
+    <button type="button" class="consent-btn" data-action="reject">Reject all</button>
+    <button type="button" class="consent-btn" data-action="save">Save choices</button>
+    <button type="button" class="consent-btn consent-btn-primary" data-action="accept">Accept all</button>
+  </div>
+</div>
+
+<script>
+  import { applyConsent, getConsent, saveConsent } from '../scripts/consent';
+
+  const banner = document.getElementById('consent') as HTMLElement;
+  const fonts = banner.querySelector<HTMLInputElement>('input[name="fonts"]')!;
+  const booking = banner.querySelector<HTMLInputElement>('input[name="booking"]')!;
+
+  const show = () => {
+    const current = getConsent();
+    fonts.checked = !!current?.fonts;
+    booking.checked = !!current?.booking;
+    banner.hidden = false;
+    banner.querySelector<HTMLButtonElement>('[data-action="accept"]')?.focus({ preventScroll: true });
+  };
+
+  const choose = (consent: { fonts: boolean; booking: boolean }) => {
+    saveConsent(consent);
+    banner.hidden = true;
+  };
+
+  banner.addEventListener('click', (e) => {
+    const action = (e.target as HTMLElement).closest<HTMLElement>('[data-action]')?.dataset.action;
+    if (action === 'accept') choose({ fonts: true, booking: true });
+    if (action === 'reject') choose({ fonts: false, booking: false });
+    if (action === 'save') choose({ fonts: fonts.checked, booking: booking.checked });
+  });
+
+  banner.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && getConsent()) banner.hidden = true;
+  });
+
+  window.addEventListener('consent-open', show);
+
+  const stored = getConsent();
+  if (stored) applyConsent(stored);
+  else show();
+</script>

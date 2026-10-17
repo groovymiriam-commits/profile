@@ -1,0 +1,26 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { siteConfig } from '../config/site';
+---
+
+<Layout title="Imprint" noindex>
+  <article class="container legal-page">
+    <h1>Imprint</h1>
+    <p>Legal notice (Impressum) in accordance with § 5 DDG</p>
+
+    <h2>Service provider</h2>
+    <p>
+      <strong>Sharon Avish</strong><br />
+      Paul-Heyse-Str. 21<br />
+      10407 Berlin<br />
+      Germany
+    </p>
+
+    <h2>Contact</h2>
+    <p>
+      Email: <a href={`mailto:${siteConfig.email}`}>{siteConfig.email}</a><br />
+      Website: <a href={siteConfig.url}>{siteConfig.url}</a>
+    </p>
+
+   </article>
+</Layout>

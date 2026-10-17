@@ -1,0 +1,70 @@
+---
+import type { HomePost } from '../config/home';
+
+interface Props {
+  posts: readonly HomePost[];
+  carousel?: boolean;
+}
+
+const { posts, carousel = true } = Astro.props;
+---
+
+{carousel ? (
+  <div class="journal-carousel" data-journal-carousel>
+    <div class="journal-grid" data-journal-track tabindex="0" aria-label="Journal posts">
+      {posts.map((post) => (
+        <article class="journal-card">
+          <p class="journal-card-category">{post.category}</p>
+          <h3><a href={post.href}>{post.title}</a></h3>
+          <p class="journal-card-excerpt">{post.excerpt}</p>
+          <p class="journal-card-date">{post.publishedAt}</p>
+        </article>
+      ))}
+    </div>
+    <div class="journal-carousel-controls" aria-label="Journal carousel controls">
+      <button class="journal-carousel-button" type="button" data-journal-prev aria-label="Show previous posts">
+        <span aria-hidden="true">←</span>
+      </button>
+      <button class="journal-carousel-button" type="button" data-journal-next aria-label="Show next posts">
+        <span aria-hidden="true">→</span>
+      </button>
+    </div>
+  </div>
+) : (
+  <div class="journal-grid journal-grid--static">
+    {posts.map((post) => (
+      <article class="journal-card">
+        <p class="journal-card-category">{post.category}</p>
+        <h3><a href={post.href}>{post.title}</a></h3>
+        <p class="journal-card-excerpt">{post.excerpt}</p>
+        <p class="journal-card-date">{post.publishedAt}</p>
+      </article>
+    ))}
+  </div>
+)}
+
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-journal-carousel]').forEach((carousel) => {
+    const track = carousel.querySelector<HTMLElement>('[data-journal-track]');
+    const previous = carousel.querySelector<HTMLButtonElement>('[data-journal-prev]');
+    const next = carousel.querySelector<HTMLButtonElement>('[data-journal-next]');
+
+    if (!track || !previous || !next) return;
+
+    const updateControls = () => {
+      previous.disabled = track.scrollLeft <= 0;
+      next.disabled = track.scrollLeft + track.clientWidth >= track.scrollWidth - 1;
+    };
+
+    previous.addEventListener('click', () => {
+      track.scrollBy({ left: -track.clientWidth * 0.85, behavior: 'smooth' });
+    });
+    next.addEventListener('click', () => {
+      track.scrollBy({ left: track.clientWidth * 0.85, behavior: 'smooth' });
+    });
+    track.addEventListener('scroll', updateControls, { passive: true });
+    window.addEventListener('resize', updateControls);
+    updateControls();
+  });
+</script>
