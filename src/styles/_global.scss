@@ -1,6 +1,23 @@
 @use './variables' as *;
 @use './texture' as *;
 
+@font-face {
+  font-family: 'Chewy';
+  src: url('/fonts/Chewy-Regular.woff2') format('woff2'), url('/fonts/Chewy-Regular.woff') format('woff');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Bricolage Grotesque';
+  src: url('/fonts/BricolageGrotesque24ptCondensed-SemiBold.woff2') format('woff2'),
+    url('/fonts/BricolageGrotesque24ptCondensed-SemiBold.woff') format('woff');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
 :root {
   color-scheme: light;
   --primary: #{$primary};
@@ -108,7 +125,7 @@ h4 {
   margin: 0;
   color: var(--primary);
   font-family: var(--font-title);
-  font-weight: 500;
+  font-weight: 600;
   line-height: 1.12;
 }
 
@@ -117,8 +134,9 @@ p {
 }
 
 .container {
-  width: min(calc(100% - 3rem), var(--container));
+  width: min(calc(100%), var(--container));
   margin-inline: auto;
+  padding: 1.5rem;
 }
 
 
@@ -139,7 +157,8 @@ p {
 
 @media (max-width: 40rem) {
   .container {
-    width: min(calc(100% - 2rem), var(--container));
+    width: min(calc(100%), var(--container));
+    padding: 1.5rem;
   }
 }
 

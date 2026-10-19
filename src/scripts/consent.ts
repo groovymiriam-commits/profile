@@ -1,8 +1,7 @@
-export type Consent = { fonts: boolean; booking: boolean };
+export type Consent = { booking: boolean; search?: boolean };
 
 const KEY = 'site-consent-v1';
-const FONTS_URL =
-  'https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&family=Chewy&family=Fredoka:wght@400..700&display=swap';
+const GOOGLE_VERIFICATION = 'TRvMlaDx2EOU0z25JKEoSJ7YKfUP9C08SFHbIfsi4t4';
 
 export function getConsent(): Consent | null {
   try {
@@ -24,12 +23,15 @@ export function saveConsent(consent: Consent) {
 }
 
 export function applyConsent(consent: Consent) {
-  if (consent.fonts && !document.querySelector('link[data-consent-fonts]')) {
-    const link = document.createElement('link');
-    link.rel = 'stylesheet';
-    link.href = FONTS_URL;
-    link.dataset.consentFonts = '';
-    document.head.appendChild(link);
+  // Cal.com is loaded on demand by the page script once booking consent exists.
+  const existing = document.querySelector('meta[name="google-site-verification"]');
+  if (consent.search && !existing) {
+    const meta = document.createElement('meta');
+    meta.name = 'google-site-verification';
+    meta.content = GOOGLE_VERIFICATION;
+    document.head.appendChild(meta);
+  } else if (!consent.search && existing) {
+    existing.remove();
   }
 }
 
