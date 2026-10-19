@@ -1,0 +1,1 @@
+import{r as e}from"./consent.BM19KpIL.js";document.querySelectorAll(`[data-cookie-settings]`).forEach(t=>{t.addEventListener(`click`,e)});
