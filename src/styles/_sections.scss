@@ -28,13 +28,27 @@
 .contact-section {
   position: relative;
   padding-block: clamp(4.5rem, 9vw, 7rem);
-  @include paper-texture(mix($button-hover, $light, 35%));
+  background: #D9B8C3;
+  overflow: hidden;
+  
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    background: url("/images/Texturelabs_Paper_170M.jpg") center / cover;
+    opacity: 0.25;
+    mix-blend-mode: multiply;
+    pointer-events: none;
+  }
 }
 .contact-inner {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 2rem 3rem;
+  position: relative;
+  z-index: 1;
 }
 .contact-inner > div { max-width: 38rem; }
 .contact-section h2 { color: $primary; margin-bottom: 0.75rem; }
