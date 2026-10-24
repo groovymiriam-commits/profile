@@ -18,7 +18,7 @@ const posts = await getAllPosts();
       {section.type === 'services' && (
         <section class="section container" id={section.id} aria-labelledby={`${section.id}-heading`}>
           <div class="section-intro">
-            <p class="eyebrow">{section.eyebrow}</p>
+           
             <h2 id={`${section.id}-heading`}>{section.title}</h2>
           </div>
           <div class="service-grid">
@@ -48,7 +48,7 @@ const posts = await getAllPosts();
             <section class="section section-muted" id="posts" aria-labelledby="posts-heading">
               <div class="container">
                 <div class="section-intro">
-                  <p class="eyebrow">Journal</p>
+
                   <h2 id="posts-heading">Thoughts & reflections</h2>
                 </div>
                 <PostGrid posts={posts} />
@@ -60,7 +60,7 @@ const posts = await getAllPosts();
           )}
         <section class="section container two-column" id={section.id} aria-labelledby={`${section.id}-heading`}>
           <div>
-            <p class="eyebrow">{section.eyebrow}</p>
+
             <h2 id={`${section.id}-heading`}>{section.title}</h2>
             {section.image && (
               <img 
@@ -82,7 +82,6 @@ const posts = await getAllPosts();
         <section class="contact-section" id={section.id} aria-labelledby={`${section.id}-heading`}>
           <div class="container contact-inner">
             <div>
-              <p class="eyebrow">{section.eyebrow}</p>
               <h2 id={`${section.id}-heading`}>{section.title}</h2>
               <p>{section.description}</p>
             </div>
